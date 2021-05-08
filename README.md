@@ -150,13 +150,13 @@ def update_balance(sender, instance, **kwargs):
     balance.save()
 ```
 
-The first function `initialize_balance` create a new `Balance` object whenever a new user is created. The `created` param is critical, and needed to be passed in order to check if the user is created or updated. Without it, many `Balance` object will be created.
+The first function `initialize_balance` create a new `Balance` object whenever a new user is created. The `created` param is critical, and needed to be passed in order to check if the user object is created or updated. Without it, many `Balance` objects will be created.
 
-After implementing this approach, the code base is cleaner and more coherent, and it's easier to make tests among business logic and views.
+After implementing this approach, the code base is cleaner and more coherent, and it's easier to separate tests among business logic and views.
 
 ## Test &Github Actions & CodeCov configuration
 
-The codebase is reached at 100% coverage all code with unit test. It's not an huge achievement but this result took a lot of efforts, and Test Driven Development has been proved as an excellent approach to build a good software . This approach help us more confident to add more features as well as understanding deeply what's going on with the codebase. More importantly, it shapes how we think when start new feature/functions or fix bugs, there are always need to be tested. At the beginning, it would take time and efforts to develop many test cases, but for the long run, it will fasten the development progress with minimum errors.
+The codebase is reached at 100% coverage all code with unit test. It's not an huge achievement but this result took a lot of efforts. This work help us get more confident to add more features as well as understanding deeply what's going on with the codebase. More importantly, it shapes how we think when start new feature/functions or fix bugs, there are always need to be tested. At the beginning, it would take time and efforts to develop many test cases, but for the long run, it will fasten the development progress with minimum errors.
 
 For the best practice, the test case is also split into many smaller modules in `tests` folder so that I can easily keep tracking, add/remove test cases. Another practical approach is to set up a `BaseTestCase` class as parent class for all test cases with pre-setup fixtures.
 
