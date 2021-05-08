@@ -43,6 +43,9 @@ class User(AbstractUser):
     #         return f'user_{self.id}/avatar/full{file_ext}'
     #     return False
 
+    def get_total_transactions(self):
+        return self.transactions.count()
+
     def get_balance(self):
         return self.balance.first().amount
 

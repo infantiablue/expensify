@@ -39,6 +39,8 @@ class UserTestCase(TestCase):
         self.client.logout()
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 302)
+        response = self.client.get(reverse('transactions'))
+        self.assertEqual(response.status_code, 302)
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
         response = self.client.get(reverse('logout'), follow=True)
@@ -80,6 +82,11 @@ class UserTestCase(TestCase):
     def test_index_view_logged_in(self):
         response = self.client.get(reverse('index'))
         self.assertContains(response, 'blue')
+
+    def test_index_transactions_view(self):
+        response = self.client.get(reverse('transactions'))
+        self.assertNotContains(response, 'blue')
+        self.assertNotContains(response, 'BALANCE')
 
     def test_account_view(self):
         response = self.client.get(reverse('account'))

@@ -16,8 +16,9 @@ from django.conf import settings
 
 @login_required(login_url='login')
 def index(request):
-    transactions = request.user.transactions
-    context = {'transactions': transactions.all()}
+    context = {
+        'transactions': request.user.transactions.all()[:5],
+    }
 
     if request.method == 'GET':
         form = NewTransactionForm(request.user)
@@ -37,6 +38,15 @@ def index(request):
 
     context['form'] = form
     return render(request, 'tracker/index.html', context)
+
+
+@login_required(login_url='login')
+def transactions(request):
+    context = {
+        'transactions': request.user.transactions.all(),
+        'form': NewTransactionForm(request.user)
+    }
+    return render(request, 'tracker/transactions.html', context)
 
 
 @login_required(login_url='login')

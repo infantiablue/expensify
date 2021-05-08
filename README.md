@@ -1,6 +1,6 @@
 # Expensify
 
-[![Expensify](https://github.com/infantiablue/expensify/actions/workflows/django.yml/badge.svg)](https://github.com/infantiablue/expensify/actions/workflows/django.yml) [![codecov](https://codecov.io/gh/infantiablue/expensify/branch/main/graph/badge.svg?token=T9JT3Y71PO)](https://codecov.io/gh/infantiablue/expensify)
+[![Github CI](https://github.com/infantiablue/expensify/actions/workflows/django.yml/badge.svg)](https://github.com/infantiablue/expensify/actions/workflows/django.yml) [![codecov](https://codecov.io/gh/infantiablue/expensify/branch/main/graph/badge.svg?token=T9JT3Y71PO)](https://codecov.io/gh/infantiablue/expensify)
 
 ## The Application
 
@@ -154,3 +154,7 @@ def update_balance(sender, instance, **kwargs):
 The first function `initialize_balance` create a new `Balance` object whenever a new user is created. The `created` param is critical, and needed to be passed in order to check if the user is created or updated. Without it, many `Balance` object will be created.
 
 After implementing this approach, my code base is cleaner and more coherent, and it's easier for me to make tests among business logic and views.
+
+## Github Actions & CodeCov configuration
+
+With the official document from both GitHub and CodeCov, it's not a difficult task to integrate them for Continuous Development. There is a small notice that we need to configure `environment` in yml file so that the runner can access the environment varaiables, in this case is Django scecret key.
