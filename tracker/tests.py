@@ -1,3 +1,4 @@
+import os
 import json
 import datetime
 from PIL import Image
@@ -5,10 +6,12 @@ from django.conf import settings
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
 from .models import User, Transaction, Category, Balance
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 
+# Override MEDIA_ROOT so that there is no conflict with the current media folder
+@override_settings(MEDIA_ROOT=f'{os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}/media/test/media')
 class UserTestCase(TestCase):
     def setUp(self):
         user1 = User.objects.create_user(
