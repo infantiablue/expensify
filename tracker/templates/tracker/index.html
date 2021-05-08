@@ -1,0 +1,59 @@
+{% extends "tracker/layout.html" %} {% load static %}{% block script %}
+<script src="{% static 'public/transactions.js' %}"></script>
+{% endblock %} {% block body %}
+<div class="page">
+	<h1 class="text-center text-primary m-2">Expense Tracker</h1>
+	<div class="d-flex justify-content-center">
+		<div>
+			<img id="avatar" src="/media/{{ user.avatar }}" width="96" height="96" class="mr-3 rounded-circle img-fluid" alt="Avatar" />
+		</div>
+		<div class="text-center">
+			<span class="text-monospace">Hi, {{ request.user.username }}</span>
+			<h4 class="mt-3">BALANCE</h4>
+			<h4 id="balance-value" class="text-info">${{ user.get_balance }}</h4>
+		</div>
+	</div>
+
+	<div class="d-flex mt-3 justify-content-center bd-highlight">
+		<div class="card border-success w-50">
+			<div class="card-body text-center">
+				<h5 class="card-title">INCOME</h5>
+				<h4 id="income-value" class="card-text text-success">${{user.get_total_income}}</h4>
+			</div>
+		</div>
+		<div class="card border-danger w-50">
+			<div class="card-body text-center">
+				<h5 class="card-title">EXPENSE</h5>
+				<h4 id="expense-value" class="card-text text-danger">${{user.get_total_expense}}</h4>
+			</div>
+		</div>
+	</div>
+
+	<h3>Transactions</h3>
+	{% for t in transactions %}
+	<div
+		id="transaction-{{ t.id }}"
+		class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %} bg-white p-0 my-1 p-1 d-flex"
+	>
+		<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
+		<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
+		<div class="p-1 flex-shrink-1">
+			<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
+		</div>
+	</div>
+	{% endfor %} {% if not transactions%}
+	<div class="bg-white p-0 my-1 p-1 d-flex">
+		<span class="text-warning">Oops. Nothing here</span>
+	</div>
+	{% endif %}
+	<h3>Add new transaction</h3>
+	<div class="form-group">
+		<form action="{% url 'index' %}" method="POST" method="post">
+			{% csrf_token %} {{ form }}
+			<div class="text-right mt-2"><button class="btn btn-info btn-sm">Submit</button></div>
+		</form>
+	</div>
+	<p class="text-muted fs-6 mt-2">(+) for income and (-) for expense. Ex: <b>+300</b><br />Default will be INCOME if not (+)/(-) specific.</p>
+</div>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "tracker/layout.html" %} {% load static %} {% block script %}
+<script>
+	/*
+	 ** NOTE Custom script to display filename in the input file box and replace the fake path
+	 */
+	document.querySelector("#file-browser").addEventListener("change", (event) => {
+		document.querySelector("#file-browser-label").innerHTML = event.target.value.replace(/.*[\/\\]/, "");
+	});
+</script>
+{% endblock %} {% block body %}
+<div class="page">
+	<h1 class="text-center text-primary mb-3">Account</h1>
+	<div class="form-group">
+		<form action="{% url 'account' %}" method="POST" enctype="multipart/form-data" method="post" class="form-group">
+			{% csrf_token %} {{ form }}
+			<input class="btn btn-primary" type="submit" />
+		</form>
+	</div>
+</div>
+{% endblock %}

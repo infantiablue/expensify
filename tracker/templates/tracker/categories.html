@@ -1,0 +1,28 @@
+{% extends "tracker/layout.html" %} {% load static %} {% block script %}
+<script src="{% static 'public/category.js' %}"></script>
+{% endblock %} {% block body %}
+<div class="page">
+	<h1 class="text-center text-primary mb-3">Categories</h1>
+	<ul class="list-group">
+		{% for c in categories%}
+		<li id="category-{{ c.id }}" class="list-group-item {% if c.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %}">
+			<div class="d-flex">
+				<div class="p-1 w-100 bd-highlight"><a href="{% url 'category' c.id %}">{{ c.title }}</a></div>
+				<div class="transaction-value p-1 flex-shrink-0">$ {{c.get_balance_from_category}}</div>
+				<div class="p-1 flex-shrink-1">
+					<i data-category-id="{{ c.id }}" class="btn-icon remove-category bi bi-trash"></i>
+				</div>
+			</div>
+		</li>
+		{% endfor %}
+	</ul>
+
+	<h3>Add new category</h3>
+	<div class="form-group">
+		<form action="{% url 'categories' %}" method="POST" enctype="multipart/form-data" method="post" class="form-group">
+			{% csrf_token %} {{ form }}
+			<input class="btn btn-primary mt-2" type="submit" />
+		</form>
+	</div>
+</div>
+{% endblock %}

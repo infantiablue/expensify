@@ -1,0 +1,7 @@
+[run]
+omit =
+    .env/*
+    expense/wsgi.py
+    expense/asgi.py
+    manage.py
+    tracker/apps.py
