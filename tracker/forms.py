@@ -1,7 +1,6 @@
 from django.forms import ModelForm
 from django import forms
 from .models import User, Transaction, Category
-from django.core.exceptions import ValidationError
 
 
 class NewTransactionForm(ModelForm):
@@ -17,7 +16,7 @@ class NewTransactionForm(ModelForm):
         self.fields['category'].queryset = Category.objects.filter(
             user=user).order_by('title')
 
-    text = forms.CharField(widget=forms.TextInput(
+    text = forms.CharField(label='Description', widget=forms.TextInput(
         attrs={'class': 'form-control'}), required=True, max_length=255)
     amount = forms.FloatField(widget=forms.TextInput(
         attrs={'class': 'form-control'}), required=True)

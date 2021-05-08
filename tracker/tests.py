@@ -81,12 +81,13 @@ class UserTestCase(TestCase):
 
     def test_index_view_logged_in(self):
         response = self.client.get(reverse('index'))
-        self.assertContains(response, 'blue')
+        self.assertContains(response, self.user.username)
 
     def test_index_transactions_view(self):
         response = self.client.get(reverse('transactions'))
-        self.assertNotContains(response, 'blue')
+        self.assertNotContains(response, self.user.username)
         self.assertNotContains(response, 'BALANCE')
+        self.assertNotContains(response, 'More')
 
     def test_account_view(self):
         response = self.client.get(reverse('account'))

@@ -1,4 +1,4 @@
-{% extends "tracker/layout.html" %} {% load static %}{% block script %}
+{% extends "tracker/layout.html" %} {% load static %} {% load humanize %} {% block script %}
 <script src="{% static 'public/transactions.js' %}"></script>
 {% endblock %} {% block body %}
 <div class="page">
@@ -14,13 +14,16 @@
 	{% for t in transactions %}
 	<div
 		id="transaction-{{ t.id }}"
-		class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %} bg-white p-0 my-1 p-1 d-flex"
+		class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %} bg-white p-0 my-1 p-1"
 	>
-		<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
-		<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
-		<div class="p-1 flex-shrink-1">
-			<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
+		<div class="d-flex">
+			<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
+			<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
+			<div class="p-1 flex-shrink-1">
+				<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
+			</div>
 		</div>
+		<div class="text-muted pl-1">{{ t.created | naturaltime}} in <a href="{% url 'category' t.category.id%}">{{ t.category.title }}</a></div>
 	</div>
 	{% endfor %} {% if not transactions%}
 	<div class="bg-white p-0 my-1 p-1 d-flex">
