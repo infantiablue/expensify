@@ -15,15 +15,14 @@ The main idea of the project is to build a personal expense/income tracker. It's
 - There are pretty charts to review past transactions
 - Mobile friendly
 
-It may not be the most complex capstone project you ever seen but I still got some nice techincal challenges to solve (and learnt) such as:
+It may not be the most complex capstone project you ever seen but there are still some interesting techincal challenges to be solved (and learnt) such as:
 
 - Separeate controllers and views, all logic functions such as update balance, calculate sum of income/expense ... and validators are handled in model classes as object methods. As the result, the views only handle user input and presentation layer.
 - All the user interface is written in vanilla javascript. The reason is not because I can't implement React (you can check out the project 4 - Network to see my implementation of Reat with Babel) or I dislike the framework. The thing is I want to understand 100% what I've written in the front end. Many concepts in React is interesting and useful but it's really challenging to comprehend (even easy to use).
-- Last but not least, I've reached to coverage 100% all code with unit test. It's not an huge achievement but this result took me a lot of efforts, but I really enjoyed the approach Test Driven Developemnt. This approach help me more confident to add more features as well as understanding deeply what's going on with my code base.
 
 ## The Big Lesson
 
-In this final project, I've learnt many things yet the most crucial lesson is how to separate business logic (Models) with the views. At the beginning, in order to initialize new balance and validate the input amount is income or expense, I've processed in the `views.py` file like this:
+In this final project, many things have been learnt yet the most crucial lesson is how to separate business logic (Models) with the views. At the beginning, in order to initialize new balance and validate the input amount is income or expense, the logic was placed in the `views.py` file like this:
 
 ```python
 def register(request):
@@ -94,7 +93,7 @@ def index(request):
     return render(request, 'tracker/index.html', context)
 ```
 
-Turns out, this is the bad practice. I just realized this scenario when make test case for new transaction as below
+Turns out, this is the bad practice. Espeically, when processing test cases as below.
 
 ```python
 def test_transactions_with_category(self):
@@ -153,8 +152,12 @@ def update_balance(sender, instance, **kwargs):
 
 The first function `initialize_balance` create a new `Balance` object whenever a new user is created. The `created` param is critical, and needed to be passed in order to check if the user is created or updated. Without it, many `Balance` object will be created.
 
-After implementing this approach, my code base is cleaner and more coherent, and it's easier for me to make tests among business logic and views.
+After implementing this approach, the code base is cleaner and more coherent, and it's easier to make tests among business logic and views.
 
-## Github Actions & CodeCov configuration
+## Test &Github Actions & CodeCov configuration
+
+The codebase is reached at 100% coverage all code with unit test. It's not an huge achievement but this result took a lot of efforts, and Test Driven Development has been proved as an excellent approach to build a good software . This approach help us more confident to add more features as well as understanding deeply what's going on with the codebase. More importantly, it shapes how we think when start new feature/functions or fix bugs, there are always need to be tested. At the beginning, it would take time and efforts to develop many test cases, but for the long run, it will fasten the development progress with minimum errors.
+
+For the best practice, the test case is also split into many smaller modules in `tests` folder so that I can easily keep tracking, add/remove test cases. Another practical approach is to set up a `BaseTestCase` class as parent class for all test cases with pre-setup fixtures.
 
 With the official document from both GitHub and CodeCov, it's not a difficult task to integrate them for Continuous Development. There is a small notice that we need to configure `environment` in yml file so that the runner can access the environment varaiables, in this case is Django scecret key.
