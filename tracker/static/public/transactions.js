@@ -1,6 +1,21 @@
 ready(() => {
-	let removeTransactionElms = document.querySelectorAll("i.remove-transaction");
-	removeTransactionElms.forEach((elm) => {
+	// let removeTransactionElms = document.querySelectorAll("i.remove-transaction");
+	bindRevemoveTransactions(document.querySelectorAll("i.remove-transaction"));
+});
+
+const updateBalance = () => {
+	dCall("/api/balance", {}, "GET").then((data) => {
+		if (!data.error) {
+			let balanceValueElm = document.querySelector("#balance-value");
+			balanceValueElm.textContent = `$${data.balance}`;
+			balanceValueElm.classList.add("animate__animated", "animate__fadeIn");
+			balanceValueElm.addEventListener("animationend", () => balanceValueElm.classList.remove("animate__animated", "animate__fadeIn"));
+		} else notify(data.error, "danger");
+	});
+};
+
+const bindRevemoveTransactions = (elms) => {
+	elms.forEach((elm) => {
 		elm.addEventListener("click", (evt) => {
 			let transactionID = evt.target.dataset.transactionId;
 			if (confirm("Are you sure to remove ?")) {
@@ -34,16 +49,5 @@ ready(() => {
 				});
 			}
 		});
-	});
-});
-
-const updateBalance = () => {
-	dCall("/api/balance", {}, "GET").then((data) => {
-		if (!data.error) {
-			let balanceValueElm = document.querySelector("#balance-value");
-			balanceValueElm.textContent = `$${data.balance}`;
-			balanceValueElm.classList.add("animate__animated", "animate__fadeIn");
-			balanceValueElm.addEventListener("animationend", () => balanceValueElm.classList.remove("animate__animated", "animate__fadeIn"));
-		} else notify(data.error, "danger");
 	});
 };
