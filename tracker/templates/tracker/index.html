@@ -30,18 +30,18 @@
 	</div>
 
 	<h3>Last 5 transactions</h3>
-	{% for t in transactions %}
-	<div
-		id="transaction-{{ t.id }}"
-		class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %} bg-white p-0 my-1 p-1 d-flex"
-	>
-		<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
-		<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
-		<div class="p-1 flex-shrink-1">
-			<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
+	<div id="transactions">
+		{% for t in transactions %}
+		<div id="transaction-{{ t.id }}" class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %} bg-white p-0 my-1 p-1 d-flex">
+			<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
+			<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
+			<div class="p-1 flex-shrink-1">
+				<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
+			</div>
 		</div>
+		{% endfor %}
 	</div>
-	{% endfor %} {% if user.get_total_transactions > 5 %}
+	{% if user.get_total_transactions > 5 %}
 	<p class="text-right"><a href="{% url 'transactions' %}">More</a></p>
 	{% endif %} {% if not transactions%}
 	<div class="bg-white p-0 my-1 p-1 d-flex">

@@ -1,5 +1,7 @@
-{% extends "tracker/layout.html" %} {% load static %} {% load humanize %} {% block script %}
-<script src="{% static 'public/transactions.js' %}"></script>
+{% extends "tracker/layout.html" %} {% load static %} {% load humanize %} {% block head %}
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+{% block script %} {% endblock %}
+<script type="text/babel" src="{% static 'public/transactions.js' %}"></script>
 {% endblock %} {% block body %}
 <div class="page">
 	<h3>Add new transaction</h3>
@@ -10,22 +12,24 @@
 		</form>
 	</div>
 	<p class="text-muted fs-6 mt-2">(+) for income and (-) for expense. Ex: <b>+300</b><br />Default will be INCOME if not (+)/(-) specific.</p>
-	<h3>Transactions</h3>
-	{% for t in transactions %}
-	<div
-		id="transaction-{{ t.id }}"
-		class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %} bg-white p-0 my-1 p-1"
-	>
-		<div class="d-flex">
-			<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
-			<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
-			<div class="p-1 flex-shrink-1">
-				<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
+	<h3>{{user.get_total_transactions}} Transactions</h3>
+	<div id="transactions">
+		{% for t in transactions %}
+		<div id="transaction-{{ t.id }}" class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %}bg-white p-0 my-1 p-1">
+			<div class="d-flex">
+				<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
+				<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
+				<div class="p-1 flex-shrink-1">
+					<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
+				</div>
 			</div>
+			<div class="text-muted pl-1">{{ t.created | naturaltime}} {% if t.category %}in <a href="{% url 'category' t.category.id %}">{{ t.category.title }}</a>{% endif %}</div>
 		</div>
-		<div class="text-muted pl-1">{{ t.created | naturaltime}} in <a href="{% url 'category' t.category.id%}">{{ t.category.title }}</a></div>
+		{% endfor %}
 	</div>
-	{% endfor %} {% if not transactions%}
+	{% if user.get_total_transactions > 5 %}
+	<p id="more-container" class="text-right"><a id="more" class="abutton">More</a></p>
+	{% endif %} {% if not transactions%}
 	<div class="bg-white p-0 my-1 p-1 d-flex">
 		<span class="text-warning">Oops. Nothing here</span>
 	</div>

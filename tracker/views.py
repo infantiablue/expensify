@@ -43,7 +43,7 @@ def index(request):
 @login_required(login_url='login')
 def transactions(request):
     context = {
-        'transactions': request.user.transactions.all(),
+        'transactions': request.user.transactions.all()[:5],
         'form': NewTransactionForm(request.user)
     }
     return render(request, 'tracker/transactions.html', context)

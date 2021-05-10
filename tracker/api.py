@@ -7,6 +7,7 @@ from django.db.models import Sum
 from .models import Category, Transaction
 from .utils import login_required_ajax
 from django.core.serializers import serialize
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 @ login_required_ajax
@@ -57,7 +58,17 @@ def transactions(request):
         transactions = request.user.transactions.all()[
             (page*TRANSACTIONS_PER_PAGE-TRANSACTIONS_PER_PAGE):((page+1)*TRANSACTIONS_PER_PAGE-TRANSACTIONS_PER_PAGE)]
         if transactions.count() > 0:
-            return JsonResponse(list(transactions.values()), safe=False)
+            result = []
+            for t in transactions:
+                # NOTE: need to figure out why cant delete _state attribute by using del t._state
+                temp = {**t.__dict__}
+                temp.pop('_state', None)
+                category_title = None
+                if t.category:
+                    category_title = t.category.title
+                result.append(
+                    {**temp, 'category_title': category_title, 'human_time': naturaltime(t.created)})
+            return JsonResponse(result, safe=False)
         else:
             return JsonResponse({'error': 'End of transactions.'})
     return JsonResponse({'error': 'You are not authorized.'})

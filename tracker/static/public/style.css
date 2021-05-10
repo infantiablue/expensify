@@ -101,3 +101,7 @@ ul.category-source {
 	color: orange;
 	text-decoration: none;
 }
+
+.abutton:hover {
+	cursor: pointer;
+}
