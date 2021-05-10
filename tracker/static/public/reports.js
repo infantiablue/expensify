@@ -5,7 +5,7 @@ const dateLocaleOptions = {
 };
 ready(() => {
 	let dailyExpenseCtx = document.getElementById("daily-expense-chart");
-	dCall("/api/transaction", {}, "GET").then((result) => {
+	dCall("/api/reports", {}, "GET").then((result) => {
 		let amounts = result.amounts.map((a) => Math.abs(a));
 		let time = result.time.map((t) => new Date(t).toLocaleDateString("en", dateLocaleOptions));
 		let maxAmount = Math.max(...amounts);
@@ -41,7 +41,7 @@ ready(() => {
 	});
 
 	let dailyIncomeCtx = document.getElementById("daily-income-chart");
-	dCall("/api/transaction?source=income", {}, "GET").then((result) => {
+	dCall("/api/reports?source=income", {}, "GET").then((result) => {
 		let amounts = result.amounts.map((a) => Math.abs(a));
 		let time = result.time.map((t) => new Date(t).toLocaleDateString("en", dateLocaleOptions));
 		let maxAmount = Math.max(...amounts);

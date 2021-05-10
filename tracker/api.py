@@ -20,6 +20,11 @@ def transaction(request):
         else:
             return JsonResponse({'error': 'You are not authorized.'})
 
+    return JsonResponse({'error': 'You are not authorized.'})
+
+
+@ login_required_ajax
+def reports(request):
     if request.method == 'GET':
         today = timezone.now()
         days_ago = today - timedelta(days=7)
@@ -43,13 +48,14 @@ def transaction(request):
 
 @ login_required_ajax
 def transactions(request):
+    TRANSACTIONS_PER_PAGE = 5
     if request.method == 'GET':
         params = dict(request.GET)
         page = 1
         if 'page' in params:
             page = int(params['page'][0])
         transactions = request.user.transactions.all()[
-            (page*5-5):((page+1)*5-5)]
+            (page*TRANSACTIONS_PER_PAGE-TRANSACTIONS_PER_PAGE):((page+1)*TRANSACTIONS_PER_PAGE-TRANSACTIONS_PER_PAGE)]
         if transactions.count() > 0:
             return JsonResponse(list(transactions.values()), safe=False)
         else:

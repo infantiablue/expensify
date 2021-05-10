@@ -23,7 +23,7 @@ class ApiTestCase(BaseTestCase):
         transaction1.save()
         transaction2.save()
         transaction3.save()
-        response = self.client.get('/api/transaction')
+        response = self.client.get('/api/reports')
 
         today = datetime.date.today()
         self.assertEqual(response.status_code, 200)
@@ -47,7 +47,7 @@ class ApiTestCase(BaseTestCase):
         transaction1.save()
         transaction2.save()
         transaction3.save()
-        response = self.client.get('/api/transaction?source=income')
+        response = self.client.get('/api/reports?source=income')
 
         today = datetime.date.today()
         self.assertEqual(response.status_code, 200)
@@ -167,7 +167,6 @@ class ApiTestCase(BaseTestCase):
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
             {'error': 'You are not authorized.'}
-
         )
 
     def test_api_get_user_balance(self):
@@ -204,7 +203,7 @@ class ApiTestCase(BaseTestCase):
 
         with self.assertRaisesRegexp(IndexError, 'list index out of range'):
             self.assertEqual(json.loads(response.content)
-                             [5]['text'], 'income5')
+                             [5]['text'], 'income6')
         response = self.client.get('/api/transactions?page=2')
         self.assertEqual(json.loads(response.content)[0]['text'], 'income6')
         self.assertEqual(json.loads(response.content)[0]['amount'], 50 * 6)
