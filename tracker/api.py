@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.db.models import Sum
 from .models import Category, Transaction
 from .utils import login_required_ajax
+from django.core.serializers import serialize
 
 
 @ login_required_ajax
@@ -37,6 +38,22 @@ def transaction(request):
                 result['time'].append(t['created__date'])
         return JsonResponse(result)
 
+    return JsonResponse({'error': 'You are not authorized.'})
+
+
+@ login_required_ajax
+def transactions(request):
+    if request.method == 'GET':
+        params = dict(request.GET)
+        page = 1
+        if 'page' in params:
+            page = int(params['page'][0])
+        transactions = request.user.transactions.all()[
+            (page*5-5):((page+1)*5-5)]
+        if transactions.count() > 0:
+            return JsonResponse(list(transactions.values()), safe=False)
+        else:
+            return JsonResponse({'error': 'End of transactions.'})
     return JsonResponse({'error': 'You are not authorized.'})
 
 
