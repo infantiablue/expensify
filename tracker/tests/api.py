@@ -190,22 +190,24 @@ class ApiTestCase(BaseTestCase):
 
     def test_get_transactions_per_page(self):
         t = {}
+        '''Quickly create 11 transactions'''
         for i in range(1, 12):
             t[i] = Transaction(text=f'income{i}', amount=50*i, user=self.user)
             t[i].save()
         response = self.client.get('/api/transactions')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content)[0]['text'], 'income10')
-        self.assertEqual(json.loads(response.content)[0]['amount'], 50 * 10)
-        self.assertEqual(json.loads(response.content)[4]['text'], 'income6')
-        self.assertEqual(json.loads(response.content)[4]['amount'], 50 * 6)
+        '''The latest transaction is sorted by time created'''
+        self.assertEqual(json.loads(response.content)[0]['text'], 'income11')
+        self.assertEqual(json.loads(response.content)[0]['amount'], 50 * 11)
+        self.assertEqual(json.loads(response.content)[4]['text'], 'income7')
+        self.assertEqual(json.loads(response.content)[4]['amount'], 50 * 7)
 
         with self.assertRaisesRegexp(IndexError, 'list index out of range'):
             self.assertEqual(json.loads(response.content)
                              [5]['text'], 'income5')
         response = self.client.get('/api/transactions?page=2')
-        self.assertEqual(json.loads(response.content)[0]['text'], 'income5')
-        self.assertEqual(json.loads(response.content)[0]['amount'], 50 * 5)
+        self.assertEqual(json.loads(response.content)[0]['text'], 'income6')
+        self.assertEqual(json.loads(response.content)[0]['amount'], 50 * 6)
         response = self.client.get('/api/transactions?page=4')
         self.assertJSONEqual(
             str(response.content, encoding='utf8'),
