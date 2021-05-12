@@ -292,4 +292,4 @@ class ApiTestCase(BaseTestCase):
         '''The latest transaction is sorted by time created'''
         self.assertEqual(json.loads(response.content)[0]['text'], 'income10')
         self.assertEqual(json.loads(response.content)
-                         [0]['category'], 'Interest')
+                         [0]['category_title'], 'Interest')
