@@ -12,6 +12,8 @@ The main idea of the project is to build a personal expense/income tracker. It's
 - Remove category (AJAX)
 - The user can see transactions per category
 - The user can check balance, total income, total expense at a glance
+- The user can view all transactions with infinite loading implementation
+- The user can update personal information and change avatar
 - There are pretty charts to review past transactions
 - Mobile friendly
 
@@ -19,6 +21,7 @@ It may not be the most complex capstone project you ever seen but there are stil
 
 - Separeate controllers and views, all logic functions such as update balance, calculate sum of income/expense ... and validators are handled in model classes as object methods. As the result, the views only handle user input and presentation layer.
 - All the user interface is written in vanilla javascript. The reason is not because I can't implement React (you can check out the project 4 - Network to see my implementation of Reat with Babel) or I dislike the framework. The thing is I want to understand 100% what I've written in the front end. Many concepts in React is interesting and useful but it's really challenging to comprehend (even easy to use).
+- Ultimately, I've developed and published a JS library - [vanjs toolkit](https://github.com/infantiablue/vanjs) as a side project for the capstone. The idea is, through the course, I've face some repeated front-end functions such as notify user when a action was completed or error happened, in-page update, make ajax call ... So I deciced to group all of them into a library which I may use later.
 
 ## The Big Lesson
 
@@ -111,7 +114,7 @@ def test_transactions_with_category(self):
         self.assertEqual(self.user.get_balance(), 300)
 ```
 
-As the unit test deal directly with business logic in Model layer, so the balance has not been updated as exptected. Of course, we can make this works by posting directly to the form yet it is not the proper way. Fortunately, Django gives us very powerful mechanism to hook up post or pre update/insert/delete database with `Signals` After examining [the official Django documentation](https://docs.djangoproject.com/en/3.2/topics/signals/), it's prettys straigt forward to move all business logic into Model layer with `post_save` and `pre_save` signals
+As the unit test deal directly with business logic in Model layer, so the balance has not been updated as exptected. Of course, we can make this works by posting directly to the form yet it is not the proper way. Fortunately, Django gives us very powerful mechanism to hook up post or pre update/insert/delete database with `Signals` After examining [the official Django documentation](https://docs.djangoproject.com/en/3.2/topics/signals/), it's pretty straigt forward to move all business logics into Model layer with `post_save` and `pre_save` signals
 
 ```python
 @receiver(post_save, sender=User)
@@ -156,7 +159,7 @@ After implementing this approach, the code base is cleaner and more coherent, an
 
 ## Test &Github Actions & CodeCov configuration
 
-The codebase is reached at 100% coverage all code with unit test. It's not an huge achievement but this result took a lot of efforts. This work help us get more confident to add more features as well as understanding deeply what's going on with the codebase. More importantly, it shapes how we think when start new feature/functions or fix bugs, there are always need to be tested. At the beginning, it would take time and efforts to develop many test cases, but for the long run, it will fasten the development progress with minimum errors.
+The codebase is reached at 100% coverage all code with unit test. It's not an huge achievement but this result took a lot of efforts. This work help me get more confident to add more features as well as understanding deeply what's going on with the codebase. More importantly, it shapes how we think when start new feature/functions or fix bugs, there are always need to be tested. At the beginning, it would take time and efforts to develop many test cases, but for the long run, it will fasten the development progress with minimum errors.
 
 For the best practice, the test case is also split into many smaller modules in `tests` folder so that I can easily keep tracking, add/remove test cases. Another practical approach is to set up a `BaseTestCase` class as parent class for all test cases with pre-setup fixtures.
 
