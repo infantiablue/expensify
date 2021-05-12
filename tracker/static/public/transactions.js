@@ -1,7 +1,6 @@
 /** @jsx createElement */
 /*** @jsxFrag createFragment */
 const { fadeIn, notify, ready, djangoCall, createElement, appendChild, createFragment } = vanjs;
-
 const updateBalance = () => {
 	djangoCall("/api/balance", {}, "GET").then((data) => {
 		if (!data.error) {

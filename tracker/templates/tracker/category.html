@@ -1,29 +1,13 @@
-{% extends "tracker/layout.html" %} {% load static %} {% load humanize %} {% block script %}
+{% extends "tracker/layout.html" %} {% load static %} {% block script %}
 <script src="{% static 'public/transactions.js' %}"></script>
 {% endblock %} {% block body %}
 <div class="page">
 	<h1 class="text-center text-primary m-2">{{ category.title }}</h1>
 	<h3>Transactions</h3>
-	{% for t in transactions %}
-	<div
-		id="transaction-{{ t.id }}"
-		class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %} bg-white p-0 my-1 p-1"
-	>
-		<div class="d-flex">
-			<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
-			<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
-			<div class="p-1 flex-shrink-0">
-				<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
-			</div>
-		</div>
-		<div class="text-muted pl-1">{{ t.created | naturaltime}}</div>
-	</div>
-
-	{% endfor %} {% if not transactions%}
+	{% include "tracker/widgets/transactions.html" %} {% if not transactions%}
 	<div class="bg-white p-0 my-1 p-1 d-flex">
 		<span class="text-warning">Oops. Nothing here</span>
 	</div>
 	{% endif %}
 </div>
-
 {% endblock %}

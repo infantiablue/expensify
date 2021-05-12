@@ -11,6 +11,14 @@ body {
 	scroll-behavior: smooth;
 }
 
+#main a {
+	text-decoration: none;
+}
+
+#main a:hover {
+	color: orange;
+}
+
 .center-box {
 	width: 360px;
 }
