@@ -1,11 +1,14 @@
+html,
 body {
 	background-color: #edf6f9;
-	margin: 0;
+	margin: 0 auto;
 	font-family: "Lato", sans-serif;
+	height: 100%;
 }
 
 #main {
 	min-height: 100vh;
+	scroll-behavior: smooth;
 }
 
 .center-box {
@@ -92,16 +95,17 @@ ul.category-source {
 	text-transform: capitalize;
 }
 
-.menu-link {
+a.menu-link {
 	color: #edf6f9;
 	padding-right: 0.25rem;
+	text-decoration: none;
 }
 
-.menu-link:hover {
+a.menu-link:hover {
 	color: orange;
 	text-decoration: none;
 }
 
-.abutton:hover {
+a.abutton:hover {
 	cursor: pointer;
 }

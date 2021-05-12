@@ -8,7 +8,7 @@ class NewTransactionForm(ModelForm):
         model = Transaction
         fields = ['text', 'amount', 'category']
         widgets = {
-            'category': forms.Select(attrs={'class': 'form-control'})
+            'category': forms.Select(attrs={'class': 'form-select'})
         }
 
     def __init__(self, user, *args, **kwargs):

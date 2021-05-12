@@ -1,3 +1,5 @@
+const { djangoCall, ready } = vanjs;
+
 const dateLocaleOptions = {
 	weekday: "short",
 	month: "2-digit",
@@ -5,7 +7,7 @@ const dateLocaleOptions = {
 };
 ready(() => {
 	let dailyExpenseCtx = document.getElementById("daily-expense-chart");
-	dCall("/api/reports", {}, "GET").then((result) => {
+	djangoCall("/api/reports", {}, "GET").then((result) => {
 		let amounts = result.amounts.map((a) => Math.abs(a));
 		let time = result.time.map((t) => new Date(t).toLocaleDateString("en", dateLocaleOptions));
 		let maxAmount = Math.max(...amounts);
@@ -41,7 +43,7 @@ ready(() => {
 	});
 
 	let dailyIncomeCtx = document.getElementById("daily-income-chart");
-	dCall("/api/reports?source=income", {}, "GET").then((result) => {
+	djangoCall("/api/reports?source=income", {}, "GET").then((result) => {
 		let amounts = result.amounts.map((a) => Math.abs(a));
 		let time = result.time.map((t) => new Date(t).toLocaleDateString("en", dateLocaleOptions));
 		let maxAmount = Math.max(...amounts);
@@ -77,8 +79,7 @@ ready(() => {
 	});
 
 	let expenseCtx = document.getElementById("expense-chart");
-	dCall("/api/category", {}, "GET").then((result) => {
-		console.log(result);
+	djangoCall("/api/category", {}, "GET").then((result) => {
 		let expenseChart = new Chart(expenseCtx, {
 			type: "pie",
 			data: {
@@ -102,7 +103,7 @@ ready(() => {
 	});
 
 	let incomeCtx = document.getElementById("income-chart");
-	dCall("/api/category?source=income", {}, "GET").then((result) => {
+	djangoCall("/api/category?source=income", {}, "GET").then((result) => {
 		let incomeChart = new Chart(incomeCtx, {
 			type: "pie",
 			data: {

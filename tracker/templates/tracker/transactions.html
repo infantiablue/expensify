@@ -1,6 +1,6 @@
 {% extends "tracker/layout.html" %} {% load static %} {% load humanize %} {% block head %}
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-{% block script %} {% endblock %}
+{% endblock %} {% block script %}
 <script type="text/babel" src="{% static 'public/transactions.js' %}"></script>
 {% endblock %} {% block body %}
 <div class="page">
@@ -8,14 +8,17 @@
 	<div class="form-group">
 		<form action="{% url 'index' %}" method="POST" method="post">
 			{% csrf_token %} {{ form }}
-			<div class="text-right mt-2"><button class="btn btn-info btn-sm">Submit</button></div>
+			<div class="text-end mt-2"><button class="btn btn-info btn-sm">Submit</button></div>
 		</form>
 	</div>
 	<p class="text-muted fs-6 mt-2">(+) for income and (-) for expense. Ex: <b>+300</b><br />Default will be INCOME if not (+)/(-) specific.</p>
 	<h3>{{user.get_total_transactions}} Transactions</h3>
 	<div id="transactions">
 		{% for t in transactions %}
-		<div id="transaction-{{ t.id }}" class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %}bg-white p-0 my-1 p-1">
+		<div
+			id="transaction-{{ t.id }}"
+			class="{% if t.source == 'income' %} transaction-income {% else %} transaction-expense {% endif %}bg-white p-0 my-1 p-1"
+		>
 			<div class="d-flex">
 				<div class="p-1 w-75 bd-highlight">{{t.text}}</div>
 				<div class="transaction-value p-1 flex-shrink-0">$ {{t.amount}}</div>
@@ -23,12 +26,14 @@
 					<i data-transaction-id="{{ t.id }}" class="btn-icon remove-transaction bi bi-trash"></i>
 				</div>
 			</div>
-			<div class="text-muted pl-1">{{ t.created | naturaltime}} {% if t.category %}in <a href="{% url 'category' t.category.id %}">{{ t.category.title }}</a>{% endif %}</div>
+			<div class="text-muted pl-1">
+				{{ t.created | naturaltime}} {% if t.category %}in <a href="{% url 'category' t.category.id %}">{{ t.category.title }}</a>{% endif %}
+			</div>
 		</div>
 		{% endfor %}
 	</div>
 	{% if user.get_total_transactions > 5 %}
-	<p id="more-container" class="text-right"><a id="more" class="abutton">More</a></p>
+	<p id="more-container" class="text-end"><a id="more" class="abutton">More</a></p>
 	{% endif %} {% if not transactions%}
 	<div class="bg-white p-0 my-1 p-1 d-flex">
 		<span class="text-warning">Oops. Nothing here</span>

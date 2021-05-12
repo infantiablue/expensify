@@ -1,33 +1,9 @@
 /** @jsx createElement */
 /*** @jsxFrag createFragment */
-
-const createElement = (tag, props, ...children) => {
-	if (typeof tag === "function") return tag(props, ...children);
-	const element = document.createElement(tag);
-
-	Object.entries(props || {}).forEach(([name, value]) => {
-		if (name.startsWith("on") && name.toLowerCase() in window) element.addEventListener(name.toLowerCase().substr(2), value);
-		else element.setAttribute(name, value.toString());
-	});
-
-	children.forEach((child) => {
-		appendChild(element, child);
-	});
-
-	return element;
-};
-
-const appendChild = (parent, child) => {
-	if (Array.isArray(child)) child.forEach((nestedChild) => appendChild(parent, nestedChild));
-	else parent.appendChild(child.nodeType ? child : document.createTextNode(child));
-};
-
-const createFragment = (props, ...children) => {
-	return children;
-};
+const { fadeIn, notify, ready, djangoCall, createElement, appendChild, createFragment } = vanjs;
 
 const updateBalance = () => {
-	dCall("/api/balance", {}, "GET").then((data) => {
+	djangoCall("/api/balance", {}, "GET").then((data) => {
 		if (!data.error) {
 			let balanceValueElm = document.querySelector("#balance-value");
 			balanceValueElm.textContent = `$${data.balance}`;
@@ -42,7 +18,7 @@ const bindRevemoveTransactions = (elms) => {
 		elm.addEventListener("click", (evt) => {
 			let transactionID = evt.target.dataset.transactionId;
 			if (confirm("Are you sure to remove ?")) {
-				dCall("/api/transaction", { transaction_id: transactionID }, (method = "DELETE")).then((data) => {
+				djangoCall("/api/transaction", { transaction_id: transactionID }, "DELETE").then((data) => {
 					if (!data.error) {
 						let transactionElm = document.querySelector(`#transaction-${transactionID}`);
 						let expenseValueElm = document.querySelector("#expense-value");
@@ -56,12 +32,10 @@ const bindRevemoveTransactions = (elms) => {
 							let transactionValue = parseFloat(transactionValueElm.textContent.replace("$", "").trim());
 							if (transactionValue > 0) {
 								incomeValueElm.textContent = `$${parseFloat(incomeValueElm.textContent.replace("$", "").trim()) - transactionValue}`;
-								incomeValueElm.classList.add("animate__animated", "animate__fadeIn");
-								incomeValueElm.addEventListener("animationend", () => incomeValueElm.classList.remove("animate__animated", "animate__fadeIn"));
+								fadeIn(incomeValueElm);
 							} else if (transactionValue < 0) {
 								expenseValueElm.textContent = `$${parseFloat(expenseValueElm.textContent.replace("$", "").trim()) - transactionValue}`;
-								expenseValueElm.classList.add("animate__animated", "animate__fadeIn");
-								expenseValueElm.addEventListener("animationend", () => expenseValueElm.classList.remove("animate__animated", "animate__fadeIn"));
+								fadeIn(incomeValueElm);
 							}
 							updateBalance();
 						}
@@ -75,8 +49,11 @@ const bindRevemoveTransactions = (elms) => {
 	});
 };
 
+let isFetching = false;
+let nextPage = 2;
 const loadMoreTransactions = (page) => {
-	dCall(`/api/transactions?page=${page}`, {}, "GET").then((data) => {
+	isFetching = true;
+	djangoCall(`/api/transactions?page=${page}`, {}, "GET").then((data) => {
 		if (!data.error) {
 			const UsingFragment = (
 				<div>
@@ -103,16 +80,27 @@ const loadMoreTransactions = (page) => {
 				</div>
 			);
 			document.querySelector("#transactions").appendChild(UsingFragment);
-			nextPage++;
 		} else {
-			notify(data.error, "danger");
-			document.querySelector("#more").remove();
+			// notify(data.error, "danger");
+			let elmMore = document.querySelector("#more");
+			elmMore && elmMore.remove();
 			document.querySelector("#more-container").textContent = "The End !";
 		}
+		nextPage++;
+		isFetching = false;
 	});
 };
-let nextPage = 2;
+
 ready(() => {
-	bindRevemoveTransactions(document.querySelectorAll("i.remove-transaction"));
-	document.querySelector("#more").addEventListener("click", (evt) => loadMoreTransactions(nextPage));
+	bindRevemoveTransactions(document.querySelectorAll(".remove-transaction"));
+	let moreElm = document.querySelector("#more");
+	if (moreElm) {
+		moreElm.addEventListener("click", () => loadMoreTransactions(nextPage));
+		window.onscroll = () => {
+			window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+				document.querySelector("#more-container").textContent != "The End !" &&
+				!isFetching &&
+				loadMoreTransactions(nextPage);
+		};
+	}
 });
