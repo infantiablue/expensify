@@ -8,6 +8,71 @@ class ApiTestCase(BaseTestCase):
     def setUp(self):
         super().setUp()
 
+    def test_unauthorized_user_api(self):
+        response = self.client.post('/api/transaction')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authorized.'}
+        )
+        response = self.client.post('/api/reports')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authorized.'}
+        )
+        response = self.client.post('/api/category')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authorized.'}
+        )
+        response = self.client.post('/api/transactions')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authorized.'}
+        )
+
+    def test_unauthenticated_user_api(self):
+        self.client.logout()
+        response = self.client.get('/api/balance')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authenticated.'}
+        )
+        response = self.client.post('/api/transactions')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authenticated.'}
+        )
+        response = self.client.get('/api/transaction')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authenticated.'}
+        )
+        response = self.client.delete('/api/transaction')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authenticated.'}
+        )
+        response = self.client.delete('/api/transactions')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authenticated.'}
+        )
+        response = self.client.delete('/api/category')
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'You are not authenticated.'}
+        )
+
     def test_api_report_expense_transaction(self):
         cat_income = Category(title='Interest', user=self.user)
         cat_expense = Category(
@@ -212,3 +277,19 @@ class ApiTestCase(BaseTestCase):
             str(response.content, encoding='utf8'),
             {'error': 'End of transactions.'}
         )
+
+    def test_get_transactions_per_page_with_category(self):
+        t = {}
+        cat_income = Category(title='Interest', user=self.user2)
+        cat_income.save()
+        '''Quickly create 11 transactions'''
+        for i in range(1, 11):
+            t[i] = Transaction(
+                text=f'income{i}', amount=50*i, category=cat_income, user=self.user)
+            t[i].save()
+        response = self.client.get('/api/transactions')
+        self.assertEqual(response.status_code, 200)
+        '''The latest transaction is sorted by time created'''
+        self.assertEqual(json.loads(response.content)[0]['text'], 'income10')
+        self.assertEqual(json.loads(response.content)
+                         [0]['category'], 'Interest')

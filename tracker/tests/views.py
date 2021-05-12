@@ -15,14 +15,12 @@ class ViewsTestCase(BaseTestCase):
         response = self.client.get(reverse('logout'), follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Login')
-
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 302)
         response = self.client.get(reverse('transactions'))
         self.assertEqual(response.status_code, 302)
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
-
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
         response = self.client.get(reverse('account'))
@@ -31,46 +29,6 @@ class ViewsTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 302)
         response = self.client.get(reverse('categories'))
         self.assertEqual(response.status_code, 302)
-        response = self.client.get('/api/balance')
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'error': 'You are not authorized.'}
-        )
-        response = self.client.get('/api/transaction')
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'error': 'You are not authorized.'}
-        )
-        response = self.client.delete('/api/transaction')
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'error': 'You are not authorized.'}
-        )
-        response = self.client.delete('/api/category')
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'error': 'You are not authorized.'}
-        )
-
-    def test_index_view_logged_in(self):
-        response = self.client.post('/api/transaction')
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'error': 'You are not authorized.'}
-        )
-        response = self.client.post('/api/category')
-        self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(
-            str(response.content, encoding='utf8'),
-            {'error': 'You are not authorized.'}
-        )
-        response = self.client.get(reverse('index'))
-        self.assertContains(response, self.user.username)
 
     def test_transactions_view(self):
         response = self.client.get(reverse('transactions'))

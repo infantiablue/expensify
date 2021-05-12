@@ -18,9 +18,6 @@ def transaction(request):
         if transaction.user == request.user:
             transaction.delete()
             return JsonResponse({'message': 'Your transaction is removed.'})
-        else:
-            return JsonResponse({'error': 'You are not authorized.'})
-
     return JsonResponse({'error': 'You are not authorized.'})
 
 
@@ -43,7 +40,6 @@ def reports(request):
                 result['amounts'].append(t['sum_amount'])
                 result['time'].append(t['created__date'])
         return JsonResponse(result)
-
     return JsonResponse({'error': 'You are not authorized.'})
 
 
@@ -82,8 +78,6 @@ def category(request):
         if category.user == request.user:
             category.delete()
             return JsonResponse({'message': 'Your category is removed.'})
-        else:
-            return JsonResponse({'error': 'You are not authorized.'})
 
     if request.method == 'GET':
         params = dict(request.GET)
